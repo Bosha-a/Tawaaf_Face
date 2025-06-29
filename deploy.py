@@ -5,8 +5,20 @@ import faiss
 from fastapi import FastAPI, File, UploadFile
 from pydantic import BaseModel
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
+
 
 app = FastAPI()
+
+# CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"], 
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 with open('names1.pkl', 'rb') as file:
     known_names = pickle.load(file)
