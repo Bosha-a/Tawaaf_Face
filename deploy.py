@@ -30,7 +30,6 @@ index = faiss.IndexFlatL2(128)
 index.add(np.array(known_encodings, dtype='float32'))
 
 
-
 @app.post("/upload_image")
 async def upload_image(file: UploadFile = File(...)):
     image = face_recognition.load_image_file(file.file)
