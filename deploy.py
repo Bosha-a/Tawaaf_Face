@@ -20,10 +20,10 @@ app.add_middleware(
 )
 
 
-with open('names1.pkl', 'rb') as file:
+with open('names.pkl', 'rb') as file:
     known_names = pickle.load(file)
 
-known_encodings = np.load('encodings1.npy')
+known_encodings = np.load('encodings.npy')
 
 # إنشاء FAISS index
 index = faiss.IndexFlatL2(128)
@@ -38,7 +38,7 @@ async def upload_image(file: UploadFile = File(...)):
     if len(face_locations) == 0:
         return JSONResponse(content={
             "found_faces": 0,
-            "message": "No faces detected"
+            "message": "No faces Matched"
         }, status_code=404)
 
     # extracting encodings 
@@ -49,14 +49,18 @@ async def upload_image(file: UploadFile = File(...)):
     closest_match_index = I[0][0]
     distance = D[0][0]
 
-    if distance < 0.3:
+    if distance < 0.35:
         matched_name = known_names[closest_match_index]
-    else:
-        matched_name = None
-
-    return JSONResponse(content={
+        return JSONResponse(content={
         "found_faces": 1,
-        # "encoding": encoding.tolist(),
         "matched_name": matched_name,
         "distance": float(distance)
     })
+
+    else:
+        return JSONResponse(content={
+        "found_faces": 0,
+        "matched_name": "No Face Matched",
+    })
+
+    
